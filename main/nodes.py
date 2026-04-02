@@ -64,8 +64,6 @@ def pro_agent(state:agent_state):
         final_prompt=prompt_temp.format(topic=query)
         result=pro_model.invoke(final_prompt)
     pro_facts.append(str(result.content))
-    print(pro_facts)
-    
     return {'pro_arguments':pro_facts}
         
 
@@ -97,3 +95,18 @@ def con_agent(state:agent_state):
         
     return {'con_arguments':con_facts}
 
+
+def routing(state:agent_state):
+    round=state.get("deb_round")
+    pro_facts=state.get("pro_arguments",[])
+    con_facts=state.get("con_arguments",[])
+    if round and round<=6:
+        if len(pro_facts)> len(con_facts):
+            return "con_agent"
+        elif len(pro_facts)==len(con_facts):
+            return "pro_agent"
+    else:
+        return "exit"
+       
+
+        
