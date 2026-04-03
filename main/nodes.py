@@ -1,7 +1,11 @@
-from state import agent_state
+from state import agent_state, Fact
 from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
 from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
+from langchain_community.retrievers import WikipediaRetriever
+from langchain_core.output_parsers import JsonOutputParser
+
+import wikipedia
 from pydantic import SecretStr
 
 from dotenv import load_dotenv
@@ -26,6 +30,10 @@ con_model=ChatGroq(
     temperature=0.1 
 )
 
+retriever= WikipediaRetriever(wiki_client=wikipedia, top_k_results=2)
+
+parser=JsonOutputParser(pydantic_object=Fact)
+
 def pro_agent(state:agent_state):
     query=state.get("topic")
     prompt0='''You are a professional debater arguing in FAVOR (PRO side).
@@ -34,7 +42,7 @@ def pro_agent(state:agent_state):
 
     Instructions:
     - Give a direct, practical argument (NOT a speech)
-    - It should be 1-3 lines long statement in favour of the topic.
+    - It should be 1 line long statement in favour of the topic.
     - Do not explain debate or rounds.
     '''
     prompt='''You are a professional debater arguing in FAVOR (PRO side).
@@ -47,7 +55,7 @@ def pro_agent(state:agent_state):
     - Directly counter the opponent's argument
     - Strengthen your PRO position
     - Be logical and persuasive
-    - It should be 1-3 lines long statement in favour of the topic.
+    - It should be 1 line long statement in favour of the topic.
     - Do not explain debate or rounds.
 
     '''
@@ -82,7 +90,7 @@ def con_agent(state:agent_state):
     - Directly counter the opponent's argument
     - Strengthen your CON position
     - Be logical and persuasive
-    - It should be 1-3 lines long statement against the topic.
+    - It should be 1 line long statement against the topic.
     - Do not explain debate or rounds.
     - Only provide the argument.
     '''
@@ -107,6 +115,36 @@ def routing(state:agent_state):
             return "pro_agent"
     else:
         return "exit"
+    
+def fact_checker(state:agent_state):
+    query=state.get("topic")
+    pro_facts=state.get("pro_arguments",[])
+    con_facts=state.get("con_arguments",[])
+    if pro_facts and con_facts and query:
+        docs=retriever.invoke(query)
+        content= "\n".join([doc.page_content[:500] for doc in docs])
+        arguments= pro_facts + con_facts
+        prompt_temp=''' Your a professional factchecker that will check the given facts with the help of wikipedia content:
+        Wikipedia content:
+        {content}
+        
+        Arguments:
+        {arguments}
+
+        For each argument in the list of Arguments give a verdict in Literals True, False and Needs Verification
+        Use the following instructions to generate Json for each argument:
+        {instructions}
+        Do Not:
+        - Over explain yourself
+        - Only follow the instructions
+        - Do not add any code.
+        '''
+        prompt=PromptTemplate(template=prompt_temp, input_variables=["content","arguments"], partial_variables={"instructions": parser.get_format_instructions()})
+        chain=prompt | pro_model| parser
+        result=chain.invoke({"content":content,"arguments":arguments})
+        return {"facts":result}
+
+
        
 
         
