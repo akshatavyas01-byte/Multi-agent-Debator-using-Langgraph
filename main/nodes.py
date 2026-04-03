@@ -62,17 +62,18 @@ def pro_agent(state:agent_state):
     round=state.get("deb_round")
     pro_facts=state.get("pro_arguments",[])
     con_facts=state.get("con_arguments",[])
-    if round and len(con_facts) >= round:
+    if round and len(con_facts) == round:
         fact=str(con_facts[round-1])
         prompt_temp=PromptTemplate(template=prompt, input_variables=["topic"], partial_variables={"con":fact})
         final_prompt=prompt_temp.format(topic=query)
         result=pro_model.invoke(final_prompt)
+        round+=1
     else:
         prompt_temp=PromptTemplate(template=prompt0, input_variables=["topic"])
         final_prompt=prompt_temp.format(topic=query)
         result=pro_model.invoke(final_prompt)
     pro_facts.append(str(result.content))
-    return {'pro_arguments':pro_facts}
+    return {'pro_arguments':pro_facts,"deb_round":round}
         
 
 
@@ -144,7 +145,26 @@ def fact_checker(state:agent_state):
         result=chain.invoke({"content":content,"arguments":arguments})
         return {"facts":result}
 
-
-       
+def judge(state:agent_state):
+    query=state.get("topic")
+    facts=state.get("facts")
+    prompt=''' Your a professional Judge that will decide who wins the Debate.
+    The desicion will be based on the results of factchecker agents verified facts.
+    Topic:
+    {topic}
+    Fact Checker Result:
+    {facts}
+        
+    You should return the answer on which side won "PRO" or "CON" and state a reson why the won.
+    example:"PRO" Side won as most of their statements were true and they stated better facts than "CON" side.
+    Do Not:
+    - Over explain your reason.
+    - Only 2 lines qat most for explaination.
+    - Use a professional tone
+    '''
+    prompt_temp=PromptTemplate(template=prompt,input_variables=["topic","facts"])
+    final_prompt=prompt_temp.format(topic=query, facts=facts)
+    result=con_model.invoke(final_prompt)
+    return {"verdict":result.content} 
 
         
