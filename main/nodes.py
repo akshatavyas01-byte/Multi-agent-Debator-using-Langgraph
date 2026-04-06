@@ -50,13 +50,16 @@ def pro_agent(state:agent_state):
         {topic}
     Opponent's (CON) argument:
         {con}
-
+    Your perivous statements:
+        {pro}
      Instructions:
     - Directly counter the opponent's argument
     - Strengthen your PRO position
     - Be logical and persuasive
     - It should be 1 line long statement in favour of the topic.
     - Do not explain debate or rounds.
+    - Do not repeat you privous statments.
+    - Generate a new statement every time.
 
     '''
     round=state.get("deb_round")
@@ -64,7 +67,7 @@ def pro_agent(state:agent_state):
     con_facts=state.get("con_arguments",[])
     if round and len(con_facts) == round:
         fact=str(con_facts[round-1])
-        prompt_temp=PromptTemplate(template=prompt, input_variables=["topic"], partial_variables={"con":fact})
+        prompt_temp=PromptTemplate(template=prompt, input_variables=["topic"], partial_variables={"con":fact,"pro":str(pro_facts)})
         final_prompt=prompt_temp.format(topic=query)
         result=pro_model.invoke(final_prompt)
         round+=1
@@ -109,12 +112,12 @@ def routing(state:agent_state):
     round=state.get("deb_round")
     pro_facts=state.get("pro_arguments",[])
     con_facts=state.get("con_arguments",[])
-    if round and round<=6:
+    if round and round<4:
         if len(pro_facts)> len(con_facts):
             return "con_agent"
         elif len(pro_facts)==len(con_facts):
             return "pro_agent"
-    else:
+    elif round==4:
         return "exit"
     
 def fact_checker(state:agent_state):
@@ -123,7 +126,7 @@ def fact_checker(state:agent_state):
     con_facts=state.get("con_arguments",[])
     if pro_facts and con_facts and query:
         docs=retriever.invoke(query)
-        content= "\n".join([doc.page_content[:500] for doc in docs])
+        content= "\n".join([doc.page_content[:200] for doc in docs])
         arguments= pro_facts + con_facts
         prompt_temp=''' Your a professional factchecker that will check the given facts with the help of wikipedia content:
         Wikipedia content:
@@ -133,6 +136,9 @@ def fact_checker(state:agent_state):
         {arguments}
 
         For each argument in the list of Arguments give a verdict in Literals True, False and Needs Verification
+        If the argument is not directly supported,but is logically reasonable based on content,classify it as "Needs Verification" with explanation.
+        If it contradicts content → False
+        If it aligns clearly → True
         Use the following instructions to generate Json for each argument:
         {instructions}
         Do Not:
@@ -144,6 +150,8 @@ def fact_checker(state:agent_state):
         chain=prompt | pro_model| parser
         result=chain.invoke({"content":content,"arguments":arguments})
         return {"facts":result}
+    else:
+        return {"facts": "ERROR WITH IF CONDITION"}
 
 def judge(state:agent_state):
     query=state.get("topic")
@@ -157,6 +165,7 @@ def judge(state:agent_state):
         
     You should return the answer on which side won "PRO" or "CON" and state a reson why the won.
     example:"PRO" Side won as most of their statements were true and they stated better facts than "CON" side.
+    If most arguments are "Needs Verification", base your decision on reasoning quality instead of facts.
     Do Not:
     - Over explain your reason.
     - Only 2 lines qat most for explaination.
