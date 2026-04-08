@@ -13,21 +13,40 @@ def stream(topic:str):
         "topic":topic,
         "deb_round":1
     }
+    debate={
+        "topic": topic,
+        "pro":[],
+        "con":[],
+        "verdict":''
+    }
+    st.session_state.history.insert(0,debate)
     for step in debator_graph.stream(query_state, stream_mode="updates"):
         for node, state in step.items():
             if node=="pro_agent" and "pro_arguments" in state:
                 latest=state["pro_arguments"][-1]
-                st.session_state.history.append(f"PRO:{latest}")
+                debate["pro"].append(latest)
 
             elif node=="con_agent" and "con_arguments" in state:
                 latest=state["con_arguments"][-1]
-                st.session_state.history.append(f"CON:{latest}")
+                debate["con"].append(latest)
 
             elif node=="judge" and "verdict" in state:
                 latest=state["verdict"]
-                st.session_state.history.append(f"VERDICT:{latest}")
+                debate["verdict"]=latest
 
 st.button("Debate",on_click=stream, args=[topic,])
 
-for lines in st.session_state.history:
-    st.write(lines)
+for debate in st.session_state.history:
+    st.markdown(f'## {debate["topic"]}')
+
+    pro_list=debate["pro"]
+    con_list=debate["con"]
+    
+    for i in range(4):
+        st.markdown(f"### Round {i}")
+        if i<len(pro_list):
+            st.markdown(f"**PRO:{pro_list[i]}**")
+        if i<len(con_list):
+            st.markdown(f"**CON:{con_list[i]}**")
+    
+    st.markdown(f'## VERDICT:{debate["verdict"]}')
