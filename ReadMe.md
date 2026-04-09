@@ -1,96 +1,62 @@
-# AI MULTIAGENT DEBATOR
+# Multi-Agent AI Debate System (LangGraph)
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-green)](https://multi-agent-debator-using-langgraph-1.onrender.com/)
+An AI-powered multi-agent system where specialized agents (Pro, Con, Fact-Checker, and Judge) collaborate to simulate structured debates, verify arguments, and generate a reasoned final verdict.
 
-## 1. Overview
-``This project implements a multi-agent system that simulates a debate on a given topic and determines a winner.``
+## Live Demo
+**Try it here:**[![Live Demo](https://img.shields.io/badge/Live-Demo-green)](https://multi-agent-debator-using-langgraph-1.onrender.com/)
+**Watch demo:** [![Watch Demo](images/user_interface.png)](https://youtu.be/HLJKZpAW1xg)
 
-When a user submits a topic, the pro_agent and con_agent engage in a structured debate for multiple rounds. After the debate, a fact-checker agent evaluates the integrity of the arguments presented. The verified results are then passed to a judge agent, which decides the winner based on factual accuracy and reasoning.
 
-## 2. Problem Statement
-### In the current information-rich environment, it is difficult to objectively evaluate a topic and verify its accuracy. Conflicting yet valid viewpoints make it challenging to determine which side is ultimately correct.
+## Why this project
+In an information-rich environment, evaluating topics objectively is challenging due to conflicting viewpoints and potential misinformation.
 
-This project introduces a multi-agent workflow consisting of a pro_agent, con_agent, fact-checker agent, and judge agent to simulate balanced debates, validate arguments, and provide a reasoned final decision.
+This project addresses that by:
+- introducing multiple AI agents with opposing perspectives  
+- validating arguments using fact-checking  
+- producing a balanced and reasoned final verdict
+  
+## Architecture
+![Architecture diagram](images\Multi-agent architecture.drawio.png)
 
-## 3. Solution Approach 
-#### This project uses 4 LLM-powered agents to debate, validate argument and give a reasoned final winner.
-#### Given a topic, the workflow:
- **Pro_agent:**
-    Generates a strong opening statement in favour of the topic.
-**Con_agent:**
-    Generates a counter argument opposing the pro_statement 
-**Debate rounds**:
-    Steps 1 and 2 are repeated for multiple rounds to stimulate multiple rounds of structured debate.
-**Fact-checker agent:**
-    Uses Wikipedia Retrieved content to verify the accuracy of the arguments.Returns arguments with their verified results.
-**Judge agent:**
-    Determines the winner by envaluating the results of fact checker agent. Returns a winner and factual reason.
+The system is built using multi-agent graph where each agent has s specific role:
 
+        - Pro Agent-> Generates supporting arguments
+        - Con Agent-> Generates opposing arguments
+        - Fact-Checker Agent->  Verifies arguments using retrieved knowledge
+        - Judge Agent-> Evaluates and decides the winner
+        
 **Note**: Due to token constraints, fact-checking is performed on limited context, which may impact verification accuracy.
 
-## 4. Key Features 
-    - Submit debate Topic through interface.
-    - Recieve structured arguments.
-    - Recieve reasoned winner of the debate.
-    - Session based history of topics and winner.
+## Key Highlights 
+    - Multi-agent architecture with role-based reasoning  
+    - Fact-checking using external knowledge retrieval  
+    - Structured debate simulation with multiple rounds  
+    - Final verdict based on factual validation  
 
-## 5. System Architecture
-    - Frontend - Streamit
-    - LLM - Hugging Face & GROQ
-    - LLM-Orchestration - Langgraph & Langchain
-    - Storage - Session state 
+## Tech Stack
 
-## 6. Tech Stack
+- **Language:** Python  
+- **Frontend:** Streamlit  
+- **LLM Orchestration:** LangGraph, LangChain  
+- **Model Providers:** Hugging Face, Groq  
+- **State Management:** Session-based memory  
 
-**Language:** Python  
-**Frontend:** Streamlit  
-**LLM Orchestration:** Langgraph & LangChain  
-**Model Provider:** Hugging Face & Groq
-**Environment Management:** python-dotenv  
+## Example Demo 
+### 1.Video Demo
+[![Watch Demo](images/user_interface.png)](https://youtu.be/HLJKZpAW1xg)
 
-## 7. How It Works(Execution Flow)
-    1. User Submission
-    - The user enters a topic in the interface and clicks Submit.
-
-    2. Pro_agent
-    - The llm powered agent generates a strong opening argument in favour of the topic.
-
-    3. Con_agent
-    - The llm powered agent generates a counter argument opposing the pro argument.
-
-    4. Debate Round
-    - The pro and con agents alternately generate arguments for a fixed number of rounds, simulating a structured debate.
-
-    5. Fact-checker agent
-    - The agent retrieves relevent informat form Wikipedia and verifies the factual accuracy of the arguments. It classsifies the arguments into `True`, `False` or `Needs Verification`.
-
-    6. Judge Agent
-    -  The judge evaluates the results of the fact-checker agent and determines the winner based on the factual accuracy and reasoning ability. 
-
-    7. Result Display
-    - The system displays full debate (Pro vs Con) argument along with the final verdict in the user interface.
-
-## 8. Example Input & Output
-## Render Deployed 
-### 1. Streamlit UI:
-![Streamlit UI](images\user_interface.png)
-
-### 2. Upload Word Problem:
+### 2. Topic Input:
 ![Debate topic submitted](images\user_requuest.png)
 
-### 3. Streamed Result
+### 3. Debate Output
 ![Streamed Result image 1](images\result1.png)
 ![Streamed Result image 2](images\result2.png)
 ![Streamed Result image 3](images\result3.png)
 
-### 4.Video Demo
-[![Watch Demo](images\streaming.png)](https://youtu.be/HLJKZpAW1xg)
-
-
-## 9. Installation & Setup 
+## Installation & Setup 
 ### 1. Clone the Repository:
 ```python
-git clone https://github.com/your-username/risk-analyser.git
+git clone https://github.com/akshatavyas01-byte/Multi-agent-Debator-using-Langgraph
 cd risk-analyser
 ```
 ### 2. Create Virtual Environment
@@ -113,7 +79,7 @@ hf_api=your_api_key_here
 groq_api=your_api_key_here
 ```
 
-## 10. Usage 
+## Usage 
 ### 1. Run the streamlit frontend:
 ```python
 streamlit run main/init.py
@@ -123,7 +89,7 @@ streamlit run main/init.py
     - Click Submit
     - View streamed PRO vs CON arguments along with the Verdict.
 
-## 11. Project Structure
+## Project Structure
 
      project/
             |── main/
@@ -141,14 +107,14 @@ streamlit run main/init.py
             |
             └── ReadMe.md
 
-## 12. Limitations
+## Limitations
 - Limited accuracy of the fact-checker agent due to token constraints.
 - The final verdict may be less reliable as it is based on limited fact-checking context.
 - No user authentication system is implemented.
 - No per-user session data storage.
 - No caching mechanism for repeated topics.
 
-## 13. Future Improvements
+## Future Improvements
 - Optimize or increase effective context usage for the fact-checker agent.
 - Improve the accuracy and robustness of fact verification.
 - Integrate multiple data sources for more reliable fact-checking.
@@ -156,10 +122,10 @@ streamlit run main/init.py
 - Add per-user session data storage.
 - Introduce caching for repeated queries to improve performance.
 
-## 14. License
+## License
 This project is licensed under the MIT License.
 
-## 15. Author
+## Author
 **Akshata Vyas**  
 GitHub: [akshatavyas01-byte](https://github.com/akshatavyas01-byte)
 
