@@ -1,5 +1,7 @@
 # AI MULTIAGENT DEBATOR
 
+[![Live Demo](https://img.shields.io/badge/Live-Demo-green)](https://multi-agent-debator-using-langgraph-1.onrender.com/)
+
 ## 1. Overview
 ``This project implements a multi-agent system that simulates a debate on a given topic and determines a winner.``
 
@@ -70,6 +72,20 @@ This project introduces a multi-agent workflow consisting of a pro_agent, con_ag
 
 ## 8. Example Input & Output
 ## Render Deployed 
+### 1. Streamlit UI:
+![Streamlit UI](images\user_interface.png)
+
+### 2. Upload Word Problem:
+![Debate topic submitted](images\user_requuest.png)
+
+### 3. Streamed Result
+![Streamed Result image 1](images\result1.png)
+![Streamed Result image 2](images\result2.png)
+![Streamed Result image 3](images\result3.png)
+
+### 4.Video Demo
+[![Watch Demo](images\streaming.png)](https://youtu.be/HLJKZpAW1xg)
+
 
 ## 9. Installation & Setup 
 ### 1. Clone the Repository:
