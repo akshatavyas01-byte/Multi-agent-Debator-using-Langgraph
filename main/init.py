@@ -49,4 +49,4 @@ for debate in st.session_state.history:
         if i<len(con_list):
             st.markdown(f"**CON:{con_list[i]}**")
     
-    st.markdown(f'## VERDICT:{debate["verdict"]}')
+    st.markdown(f'### VERDICT:{debate["verdict"]}')
