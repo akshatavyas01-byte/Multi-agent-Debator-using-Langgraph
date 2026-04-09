@@ -4,7 +4,8 @@ An AI-powered multi-agent system where specialized agents (Pro, Con, Fact-Checke
 
 ## Live Demo
 **Try it here:**[![Live Demo](https://img.shields.io/badge/Live-Demo-green)](https://multi-agent-debator-using-langgraph-1.onrender.com/)
-**Watch demo:** [![Watch Demo](images/user_interface.png)](https://youtu.be/HLJKZpAW1xg)
+
+**Watch demo:** [Watch Demo](https://youtu.be/HLJKZpAW1xg)
 
 
 ## Why this project
@@ -16,7 +17,7 @@ This project addresses that by:
 - producing a balanced and reasoned final verdict
   
 ## Architecture
-![Architecture diagram](images\Multi-agent architecture.drawio.png)
+![Architecture diagram](images/Multi-agent_architecture.drawio.png)
 
 The system is built using multi-agent graph where each agent has s specific role:
 
@@ -46,12 +47,12 @@ The system is built using multi-agent graph where each agent has s specific role
 [![Watch Demo](images/user_interface.png)](https://youtu.be/HLJKZpAW1xg)
 
 ### 2. Topic Input:
-![Debate topic submitted](images\user_requuest.png)
+![Debate topic submitted](images/user_request.png)
 
 ### 3. Debate Output
-![Streamed Result image 1](images\result1.png)
-![Streamed Result image 2](images\result2.png)
-![Streamed Result image 3](images\result3.png)
+![Streamed Result image 1](images/result1.png)
+![Streamed Result image 2](images/result2.png)
+![Streamed Result image 3](images/result3.png)
 
 ## Installation & Setup 
 ### 1. Clone the Repository:
