@@ -4,7 +4,7 @@ An AI-powered multi-agent system where specialized agents (Pro, Con, Fact-Checke
 
 ## Live Demo
 **Try it here:**[![Live Demo](https://img.shields.io/badge/Live-Demo-green)](https://multi-agent-debator-using-langgraph-1.onrender.com/)
-**Watch demo:** [![Watch Demo](images\streaming.png)](https://youtu.be/HLJKZpAW1xg)
+**Watch demo:** [![Watch Demo](images/user_interface.png)](https://youtu.be/HLJKZpAW1xg)
 
 
 ## Why this project
@@ -43,12 +43,9 @@ The system is built using multi-agent graph where each agent has s specific role
 
 ## Example Demo 
 ### 1.Video Demo
-[![Watch Demo](images\streaming.png)](https://youtu.be/HLJKZpAW1xg)
+[![Watch Demo](images/user_interface.png)](https://youtu.be/HLJKZpAW1xg)
 
-### 2. Streamlit UI:
-![Streamlit UI](images\user_interface.png)
-
-### 3. Topic Input:
+### 2. Topic Input:
 ![Debate topic submitted](images\user_requuest.png)
 
 ### 3. Debate Output
@@ -59,7 +56,7 @@ The system is built using multi-agent graph where each agent has s specific role
 ## Installation & Setup 
 ### 1. Clone the Repository:
 ```python
-git clone https://github.com/your-username/risk-analyser.git
+git clone https://github.com/akshatavyas01-byte/Multi-agent-Debator-using-Langgraph
 cd risk-analyser
 ```
 ### 2. Create Virtual Environment
